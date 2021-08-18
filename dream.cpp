@@ -52,7 +52,7 @@ int calc(int a, int  b){
 
 int main(){
     freopen("dream.in","r", stdin);
-    freopen("dream.out","w", stdout);
+    //freopen("dream.out","w", stdout);
     inputJunk
 
     cin>>n>>m;
@@ -62,24 +62,30 @@ int main(){
             cin>>grid[i][j];
         }
     }
-    queue<pair<pair<pi, int>, bool>> q;
     q.push({{{0, 0}, -1}, 0});
     step[0][0][0] = 0;
     while(!q.empty()){
         int curx = q.front().f.f.f, cury = q.front().f.f.s; bool isorange = q.front().s;
         int dir = q.front().f.s;
-        //cout<<curx<<" "<<cury<<" "<<boolalpha<<" "<<isorange<<ell;
+        cout<<curx<<" "<<cury<<" "<<boolalpha<<" "<<isorange<<ell;
         q.pop();
         for(int i = 0;i<4;i++){
             if(dir!=-1&&i!=dir)continue;
             int newx = curx+dx[i], newy = cury+dy[i];
-            if(inbound(newx, newy)&&step[newx][newy][isorange]==-1){
+            if(inbound(newx, newy)&&(step[newx][newy][isorange]==-1||grid[newx][newy]==4)){
                 bool neworange = isorange;
                 if(grid[newx][newy]==0)continue;
                 if(grid[newx][newy]==3&&!isorange)continue;
                 if(grid[newx][newy]==2)neworange = true;
                 if(grid[newx][newy]==4){
                     neworange = false;
+                    int newnewx = newx+dx[i], newnewy = newy+dy[i];
+                    if(!inbound(newnewx, newnewy))continue;
+                    if(grid[newnewx][newnewy]==3||grid[newnewx][newnewy]==0){
+                        step[newx][newy][neworange] = step[curx][cury][isorange]+1;
+                        q.push({{{newx, newy}, -1}, neworange});
+                        continue;
+                    }
                     step[newx][newy][neworange] = step[curx][cury][isorange]+1;
                     q.push({{{newx, newy}, i}, neworange});
                     continue;
@@ -89,9 +95,27 @@ int main(){
             }
         }
     }
+   /* for(int i = 0;i<n;i++){
+        for(int j = 0;j<m;j++){
+            cout<<step[i][j][0]<<" ";
+        }cout<<ell;
+    }cout<<ell;
+
+    for(int i = 0;i<n;i++){
+        for(int j = 0;j<m;j++){
+            cout<<step[i][j][1]<<" ";
+        }cout<<ell;
+    }cout<<ell;*/
     cout<<calc(step[n-1][m-1][false], step[n-1][m-1][true])<<ell;
 }
 /*CUSTOM TEST CASE 1
+5 4
+1 3 0 0
+4 1 1 0
+4 4 1 0
+3 1 0 0
+2 1 3 1
+
 */
 
 /*CUSTOM TEST CASE 2
